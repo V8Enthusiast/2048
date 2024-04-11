@@ -24,12 +24,14 @@ class Game:
         self.running = True
         self.gameOver = False
         self.hasWonGame = False
-        self.add_number(2)
+        self.add_number()
+        self.add_number()
 
     def resetGame(self):
         self.board = [[0 for _ in range(self.COLUMNS)] for i in range(self.ROWS)]
         self.empty_tiles = [(x, y) for x in range(self.COLUMNS) for y in range(self.ROWS)]
-        self.add_number(2)
+        self.add_number()
+        self.add_number()
         self.gameOver = False
 
     def render(self):
@@ -37,108 +39,125 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             if event.type == pygame.KEYDOWN:
+                moved = False
                 if self.gameOver:
                     self.resetGame()
-                if self.hasWonGame:
+                elif self.hasWonGame:
                     self.hasWonGame = False
-                moved = False
-                if event.key == pygame.K_LEFT:
-                    moved = True
-                    i = 0
-                    merged = False
-                    while i < self.COLUMNS and merged is False:
-                        i += 1
-                        for r in range(self.ROWS):
-                            # has_square = False
-                            # zero_encountered = False
-                            # for i in self.board[r]:
-                            #     if i == 0:
-                            #         zero_encountered = True
-                            #     if i != 0 and zero_encountered:
-                            #         has_square = True
-                            #         break
-                            # # if self.board[r][0] == 0 and has_square:
-                            # #     empty_spaces = True
-                            for c in range(1, self.COLUMNS):
-                                if self.board[r][c] != 0 and (self.board[r][c - 1] == 0 or self.board[r][c - 1] == self.board[r][c]):
-                                    if self.board[r][c-1] == self.board[r][c] and self.board[r][c] != 0:
-                                        self.board[r][c-1] = self.board[r][c] + self.board[r][c - 1]
-                                        if self.board[r][c] + self.board[r][c - 1] == 2048:
-                                            self.hasWonGame = True
-                                        self.empty_tiles.append((c, r))
-                                        merged = True
-                                    else:
-                                        self.board[r][c - 1] = self.board[r][c]
-                                        self.empty_tiles.remove((c - 1, r))
-                                        self.empty_tiles.append((c, r))
-                                    self.board[r][c] = 0
-                if event.key == pygame.K_RIGHT:
-                    moved = True
-                    i = 0
-                    merged = False
-                    while i < self.COLUMNS and merged is False:
-                        i += 1
-                        for r in range(self.ROWS):
-                            for c1 in range(0, self.COLUMNS - 1):
-                                c = self.COLUMNS - 2 - c1
-                                if self.board[r][c] != 0 and (self.board[r][c + 1] == 0 or self.board[r][c + 1] == self.board[r][c]):
-                                    if self.board[r][c+1] == self.board[r][c] and self.board[r][c] != 0:
-                                        self.board[r][c+1] = self.board[r][c] + self.board[r][c + 1]
-                                        if self.board[r][c] + self.board[r][c + 1] == 2048:
-                                            self.hasWonGame = True
-                                        self.empty_tiles.append((c, r))
-                                        merged = True
-                                    else:
-                                        self.board[r][c + 1] = self.board[r][c]
-                                        self.empty_tiles.remove((c + 1, r))
-                                        self.empty_tiles.append((c, r))
-                                    self.board[r][c] = 0
-                if event.key == pygame.K_UP:
-                    moved = True
-                    i = 0
-                    merged = False
-                    while i < self.ROWS and merged is False:
-                        i += 1
-                        for c in range(self.COLUMNS):
-                            for r in range(1, self.ROWS):
-                                if self.board[r][c] != 0 and (self.board[r - 1][c] == 0 or self.board[r - 1][c] == self.board[r][c]):
-                                    if self.board[r - 1][c] == self.board[r][c] and self.board[r][c] != 0:
-                                        self.board[r - 1][c] = self.board[r][c] + self.board[r - 1][c]
-                                        if self.board[r][c] + self.board[r - 1][c] == 2048:
-                                            self.hasWonGame = True
-                                        self.empty_tiles.append((c, r))
-                                        merged = True
-                                    else:
-                                        self.board[r - 1][c] = self.board[r][c]
-                                        self.empty_tiles.remove((c, r - 1))
-                                        self.empty_tiles.append((c, r))
-                                    self.board[r][c] = 0
-                if event.key == pygame.K_DOWN:
-                    moved = True
-                    i = 0
-                    merged = False
-                    while i < self.ROWS and merged is False:
-                        i += 1
-                        for c in range(self.COLUMNS):
-                            for r1 in range(0, self.ROWS - 1):
-                                r = self.COLUMNS - 2 - r1
-                                if self.board[r][c] != 0 and (self.board[r + 1][c] == 0 or self.board[r + 1][c] == self.board[r][c]):
-                                    if self.board[r + 1][c] == self.board[r][c] and self.board[r][c] != 0:
-                                        self.board[r + 1][c] = self.board[r][c] + self.board[r + 1][c]
-                                        if self.board[r][c] + self.board[r + 1][c] == 2048:
-                                            self.hasWonGame = True
-                                        self.empty_tiles.append((c, r))
-                                        merged = True
-                                    else:
-                                        self.board[r + 1][c] = self.board[r][c]
-                                        self.empty_tiles.remove((c, r + 1))
-                                        self.empty_tiles.append((c, r))
-                                    self.board[r][c] = 0
-                if moved:
-                    if random.randint(0, 100) < 10:
-                        self.add_number(4)
-                    else:
-                        self.add_number(2)
+                else:
+                    if event.key == pygame.K_LEFT:
+                        i = 0
+                        merged = False
+                        while i < self.COLUMNS and merged is False:
+                            i += 1
+                            for r in range(self.ROWS):
+                                # has_square = False
+                                # zero_encountered = False
+                                # for i in self.board[r]:
+                                #     if i == 0:
+                                #         zero_encountered = True
+                                #     if i != 0 and zero_encountered:
+                                #         has_square = True
+                                #         break
+                                # # if self.board[r][0] == 0 and has_square:
+                                # #     empty_spaces = True
+                                for c in range(1, self.COLUMNS):
+                                    if self.board[r][c] != 0 and (self.board[r][c - 1] == 0 or self.board[r][c - 1] == self.board[r][c]):
+                                        if self.board[r][c-1] == self.board[r][c] and self.board[r][c] != 0:
+                                            self.board[r][c-1] = self.board[r][c] + self.board[r][c - 1]
+                                            if self.board[r][c] + self.board[r][c - 1] == 2048:
+                                                self.hasWonGame = True
+                                            self.empty_tiles.append((c, r))
+                                            merged = True
+                                        else:
+                                            self.board[r][c - 1] = self.board[r][c]
+                                            self.empty_tiles.remove((c - 1, r))
+                                            self.empty_tiles.append((c, r))
+                                        self.board[r][c] = 0
+                                        moved = True
+                    if event.key == pygame.K_RIGHT:
+                        i = 0
+                        merged = False
+                        while i < self.COLUMNS and merged is False:
+                            i += 1
+                            for r in range(self.ROWS):
+                                for c1 in range(0, self.COLUMNS - 1):
+                                    c = self.COLUMNS - 2 - c1
+                                    if self.board[r][c] != 0 and (self.board[r][c + 1] == 0 or self.board[r][c + 1] == self.board[r][c]):
+                                        if self.board[r][c+1] == self.board[r][c] and self.board[r][c] != 0:
+                                            self.board[r][c+1] = self.board[r][c] + self.board[r][c + 1]
+                                            if self.board[r][c] + self.board[r][c + 1] == 2048:
+                                                self.hasWonGame = True
+                                            self.empty_tiles.append((c, r))
+                                            merged = True
+                                        else:
+                                            self.board[r][c + 1] = self.board[r][c]
+                                            self.empty_tiles.remove((c + 1, r))
+                                            self.empty_tiles.append((c, r))
+                                        self.board[r][c] = 0
+                                        moved = True
+                    if event.key == pygame.K_UP:
+                        i = 0
+                        merged = False
+                        while i < self.ROWS and merged is False:
+                            i += 1
+                            for c in range(self.COLUMNS):
+                                for r in range(1, self.ROWS):
+                                    if self.board[r][c] != 0 and (self.board[r - 1][c] == 0 or self.board[r - 1][c] == self.board[r][c]):
+                                        if self.board[r - 1][c] == self.board[r][c] and self.board[r][c] != 0:
+                                            self.board[r - 1][c] = self.board[r][c] + self.board[r - 1][c]
+                                            if self.board[r][c] + self.board[r - 1][c] == 2048:
+                                                self.hasWonGame = True
+                                            self.empty_tiles.append((c, r))
+                                            merged = True
+                                        else:
+                                            self.board[r - 1][c] = self.board[r][c]
+                                            self.empty_tiles.remove((c, r - 1))
+                                            self.empty_tiles.append((c, r))
+                                        self.board[r][c] = 0
+                                        moved = True
+                    if event.key == pygame.K_DOWN:
+                        i = 0
+                        merged = False
+                        while i < self.ROWS and merged is False:
+                            i += 1
+                            for c in range(self.COLUMNS):
+                                for r1 in range(0, self.ROWS - 1):
+                                    r = self.COLUMNS - 2 - r1
+                                    if self.board[r][c] != 0 and (self.board[r + 1][c] == 0 or self.board[r + 1][c] == self.board[r][c]):
+                                        if self.board[r + 1][c] == self.board[r][c] and self.board[r][c] != 0:
+                                            self.board[r + 1][c] = self.board[r][c] + self.board[r + 1][c]
+                                            if self.board[r][c] + self.board[r + 1][c] == 2048:
+                                                self.hasWonGame = True
+                                            self.empty_tiles.append((c, r))
+                                            merged = True
+                                        else:
+                                            self.board[r + 1][c] = self.board[r][c]
+                                            self.empty_tiles.remove((c, r + 1))
+                                            self.empty_tiles.append((c, r))
+                                        self.board[r][c] = 0
+                                        moved = True
+                    if moved:
+                        self.add_number()
+                    elif len(self.empty_tiles) == 0:
+                        canMove = False
+                        for r in range(0, self.ROWS):
+                            for c in range(self.COLUMNS):
+                                current_square = self.board[r][c]
+                                try:
+                                    if c > 0 and self.board[r][c - 1] == current_square:
+                                        canMove = True
+                                    if self.board[r][c + 1] == current_square:
+                                        canMove = True
+                                    if self.board[r + 1][c] == current_square:
+                                        canMove = True
+                                    if r > 0 and self.board[r - 1][c] == current_square:
+                                        canMove = True
+                                except:
+                                    pass
+                        if canMove == False:
+                            self.gameOver = True
+                            print("GAME OVER")
 
         for r, row_val in enumerate(self.board):
             for c, column_val in enumerate(row_val):
@@ -173,30 +192,15 @@ class Game:
 
         pygame.display.update()
 
-    def add_number(self, number):
+    def add_number(self):
+        if random.randint(0, 100) < 10:
+            number = 4
+        else:
+            number = 2
         if len(self.empty_tiles) > 0:
             c, r = random.choice(self.empty_tiles)
             self.board[r][c] = number
             self.empty_tiles.remove((c, r))
-        else:
-            canMove = False
-            for r in range(0, self.ROWS):
-                for c in range(self.COLUMNS):
-                    current_square = self.board[r][c]
-                    try:
-                        if c > 0 and self.board[r][c - 1] == current_square:
-                            canMove = True
-                        if self.board[r][c + 1] == current_square:
-                            canMove = True
-                        if self.board[r + 1][c] == current_square:
-                            canMove = True
-                        if r > 0 and self.board[r - 1][c] == current_square:
-                            canMove = True
-                    except:
-                        pass
-            if canMove == False:
-                self.gameOver = True
-                print("GAME OVER")
 
 game = Game()
 while game.running:
