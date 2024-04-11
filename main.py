@@ -23,6 +23,7 @@ class Game:
         pygame.display.set_caption("2048")
         self.running = True
         self.gameOver = False
+        self.hasWonGame = False
         self.add_number(2)
 
     def resetGame(self):
@@ -38,6 +39,8 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if self.gameOver:
                     self.resetGame()
+                if self.hasWonGame:
+                    self.hasWonGame = False
                 moved = False
                 if event.key == pygame.K_LEFT:
                     moved = True
@@ -60,6 +63,8 @@ class Game:
                                 if self.board[r][c] != 0 and (self.board[r][c - 1] == 0 or self.board[r][c - 1] == self.board[r][c]):
                                     if self.board[r][c-1] == self.board[r][c] and self.board[r][c] != 0:
                                         self.board[r][c-1] = self.board[r][c] + self.board[r][c - 1]
+                                        if self.board[r][c] + self.board[r][c - 1] == 2048:
+                                            self.hasWonGame = True
                                         self.empty_tiles.append((c, r))
                                         merged = True
                                     else:
@@ -79,6 +84,8 @@ class Game:
                                 if self.board[r][c] != 0 and (self.board[r][c + 1] == 0 or self.board[r][c + 1] == self.board[r][c]):
                                     if self.board[r][c+1] == self.board[r][c] and self.board[r][c] != 0:
                                         self.board[r][c+1] = self.board[r][c] + self.board[r][c + 1]
+                                        if self.board[r][c] + self.board[r][c + 1] == 2048:
+                                            self.hasWonGame = True
                                         self.empty_tiles.append((c, r))
                                         merged = True
                                     else:
@@ -97,6 +104,8 @@ class Game:
                                 if self.board[r][c] != 0 and (self.board[r - 1][c] == 0 or self.board[r - 1][c] == self.board[r][c]):
                                     if self.board[r - 1][c] == self.board[r][c] and self.board[r][c] != 0:
                                         self.board[r - 1][c] = self.board[r][c] + self.board[r - 1][c]
+                                        if self.board[r][c] + self.board[r - 1][c] == 2048:
+                                            self.hasWonGame = True
                                         self.empty_tiles.append((c, r))
                                         merged = True
                                     else:
@@ -116,6 +125,8 @@ class Game:
                                 if self.board[r][c] != 0 and (self.board[r + 1][c] == 0 or self.board[r + 1][c] == self.board[r][c]):
                                     if self.board[r + 1][c] == self.board[r][c] and self.board[r][c] != 0:
                                         self.board[r + 1][c] = self.board[r][c] + self.board[r + 1][c]
+                                        if self.board[r][c] + self.board[r + 1][c] == 2048:
+                                            self.hasWonGame = True
                                         self.empty_tiles.append((c, r))
                                         merged = True
                                     else:
@@ -142,6 +153,14 @@ class Game:
                     textRect.center = rect.center
                     self.screen.blit(text, textRect)
 
+        if self.hasWonGame:
+            font = pygame.font.SysFont('Comic Sans MS', self.TILE_SIZE // 2)
+            text = font.render("YOU BEAT THE GAME!", True, (255, 255, 255))
+            textRect = text.get_rect()
+            textRect.center = (self.width // 2, self.height // 2)
+            rect = textRect
+            pygame.draw.rect(self.screen, (0, 0, 0), rect)
+            self.screen.blit(text, textRect)
         if self.gameOver:
             font = pygame.font.SysFont('Comic Sans MS', self.TILE_SIZE // 2)
             text = font.render("GAME OVER", True, (255, 255, 255))
