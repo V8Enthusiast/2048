@@ -20,7 +20,7 @@ class Game:
         self.height = self.ROWS * self.TILE_SIZE
 
         self.screen = pygame.display.set_mode((self.width, self.height))
-
+        pygame.display.set_caption("2048")
         self.running = True
         self.gameOver = False
         self.add_number(2)
@@ -144,9 +144,11 @@ class Game:
 
         if self.gameOver:
             font = pygame.font.SysFont('Comic Sans MS', self.TILE_SIZE // 2)
-            text = font.render("GAME OVER", True, (0, 0, 0))
+            text = font.render("GAME OVER", True, (255, 255, 255))
             textRect = text.get_rect()
             textRect.center = (self.width // 2, self.height // 2)
+            rect = textRect
+            pygame.draw.rect(self.screen, (0, 0, 0), rect)
             self.screen.blit(text, textRect)
 
 
