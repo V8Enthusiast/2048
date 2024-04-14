@@ -43,7 +43,9 @@ class Game:
                 if self.gameOver:
                     self.resetGame()
                 elif self.hasWonGame:
-                    self.hasWonGame = False
+                    if event.key == pygame.K_SPACE:
+                        self.hasWonGame = False
+                        self.resetGame()
                 else:
                     if event.key == pygame.K_LEFT:
                         i = 0
@@ -65,7 +67,7 @@ class Game:
                                     if self.board[r][c] != 0 and (self.board[r][c - 1] == 0 or self.board[r][c - 1] == self.board[r][c]):
                                         if self.board[r][c-1] == self.board[r][c] and self.board[r][c] != 0:
                                             self.board[r][c-1] = self.board[r][c] + self.board[r][c - 1]
-                                            if self.board[r][c] + self.board[r][c - 1] == 2048:
+                                            if self.board[r][c - 1] == 2048:
                                                 self.hasWonGame = True
                                             self.empty_tiles.append((c, r))
                                             merged = True
@@ -86,7 +88,7 @@ class Game:
                                     if self.board[r][c] != 0 and (self.board[r][c + 1] == 0 or self.board[r][c + 1] == self.board[r][c]):
                                         if self.board[r][c+1] == self.board[r][c] and self.board[r][c] != 0:
                                             self.board[r][c+1] = self.board[r][c] + self.board[r][c + 1]
-                                            if self.board[r][c] + self.board[r][c + 1] == 2048:
+                                            if self.board[r][c + 1] == 2048:
                                                 self.hasWonGame = True
                                             self.empty_tiles.append((c, r))
                                             merged = True
@@ -106,7 +108,7 @@ class Game:
                                     if self.board[r][c] != 0 and (self.board[r - 1][c] == 0 or self.board[r - 1][c] == self.board[r][c]):
                                         if self.board[r - 1][c] == self.board[r][c] and self.board[r][c] != 0:
                                             self.board[r - 1][c] = self.board[r][c] + self.board[r - 1][c]
-                                            if self.board[r][c] + self.board[r - 1][c] == 2048:
+                                            if self.board[r - 1][c] == 2048:
                                                 self.hasWonGame = True
                                             self.empty_tiles.append((c, r))
                                             merged = True
@@ -127,7 +129,7 @@ class Game:
                                     if self.board[r][c] != 0 and (self.board[r + 1][c] == 0 or self.board[r + 1][c] == self.board[r][c]):
                                         if self.board[r + 1][c] == self.board[r][c] and self.board[r][c] != 0:
                                             self.board[r + 1][c] = self.board[r][c] + self.board[r + 1][c]
-                                            if self.board[r][c] + self.board[r + 1][c] == 2048:
+                                            if self.board[r + 1][c] == 2048:
                                                 self.hasWonGame = True
                                             self.empty_tiles.append((c, r))
                                             merged = True
@@ -173,7 +175,7 @@ class Game:
                     self.screen.blit(text, textRect)
 
         if self.hasWonGame:
-            font = pygame.font.SysFont('Comic Sans MS', self.TILE_SIZE // 2)
+            font = pygame.font.SysFont('Comic Sans MS', self.TILE_SIZE // 3)
             text = font.render("YOU BEAT THE GAME!", True, (255, 255, 255))
             textRect = text.get_rect()
             textRect.center = (self.width // 2, self.height // 2)
